@@ -1,0 +1,80 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Problem {
+  id                    String    @id @default(cuid())
+  slug                  String    @unique
+  title                 String
+  difficulty            String    // "EASY", "MEDIUM", "HARD"
+  shortDescription      String
+  problemStatement      String
+  functionalRequirements String   // Stored as JSON string array
+  assumptions           String   // Stored as JSON string array
+  constraints           String   // Stored as JSON string array
+  expectedDesignAreas   String   // Stored as JSON string array
+  sampleEdgeCases       String   // Stored as JSON string array
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  attempts              Attempt[]
+}
+
+model Attempt {
+  id            String       @id @default(cuid())
+  problemId     String
+  attemptNumber Int
+  status        String       @default("DRAFT") // DRAFT, SUBMITTED, EVALUATING, COMPLETED, FAILED
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  problem       Problem      @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  submission    Submission?
+  evaluation    Evaluation?
+
+  @@index([problemId])
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  attemptId String   @unique
+  format    String   @default("STRUCTURED_TEXT") // Extensible for CLASS_DIAGRAM, CODE, etc.
+  content   String   // JSON stringified payload containing structured fields
+  createdAt DateTime @default(now())
+
+  attempt   Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+}
+
+model Evaluation {
+  id              String                @id @default(cuid())
+  attemptId       String                @unique
+  overallScore    Int                   // 0 - 100
+  evaluatorType   String                // "RULE_BASED" or "AI"
+  summary         String
+  topStrengths    String                // JSON string array
+  topImprovements String                // JSON string array
+  createdAt       DateTime              @default(now())
+
+  attempt         Attempt               @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  criteria        EvaluationCriterion[]
+}
+
+model EvaluationCriterion {
+  id           String     @id @default(cuid())
+  evaluationId String
+  dimension    String     // One of 8 rubric dimensions
+  score        Int        // 1 - 5
+  evidence     String
+  concern      String
+  suggestion   String
+  confidence   String     // "HIGH", "MEDIUM", "LOW"
+
+  evaluation   Evaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+
+  @@index([evaluationId])
+}
