@@ -5,12 +5,6 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("Seeding database with LLD problems...");
 
-  // Clear existing problems for clean idempotent seed
-  await prisma.evaluationCriterion.deleteMany({});
-  await prisma.evaluation.deleteMany({});
-  await prisma.submission.deleteMany({});
-  await prisma.attempt.deleteMany({});
-  await prisma.problem.deleteMany({});
 
   const problems = [
     {
@@ -192,10 +186,12 @@ Your design must solve the critical concurrency challenge: preventing two custom
   ];
 
   for (const prob of problems) {
-    const created = await prisma.problem.create({
-      data: prob,
+    const upserted = await prisma.problem.upsert({
+      where: { slug: prob.slug },
+      update: prob,
+      create: prob,
     });
-    console.log(`Created problem: ${created.title} (${created.slug})`);
+    console.log(`Configured problem: ${upserted.title} (${upserted.slug})`);
   }
 
   console.log("Database seeded successfully!");

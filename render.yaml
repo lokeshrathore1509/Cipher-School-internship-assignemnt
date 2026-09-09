@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: lld-practice-platform
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: EVALUATOR_TYPE
+        value: AUTO
+      - key: NODE_VERSION
+        value: 20
