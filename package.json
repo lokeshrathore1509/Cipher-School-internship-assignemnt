@@ -20,27 +20,28 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
+    "@prisma/client": "^6.4.0",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.16.0",
     "next": "^15.1.7",
+    "prisma": "^6.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "@prisma/client": "^6.4.0",
-    "prisma": "^6.4.0",
+    "tailwind-merge": "^3.0.2",
     "tsx": "^4.19.2",
-    "zod": "^3.24.2",
-    "lucide-react": "^1.16.0",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.0.2"
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "typescript": "^5.7.3",
+    "@playwright/test": "^1.50.0",
     "@types/node": "^22.13.0",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "autoprefixer": "^10.4.20",
+    "marked": "^18.0.12",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "autoprefixer": "^10.4.20",
-    "vitest": "^3.0.5",
-    "@playwright/test": "^1.50.0"
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
